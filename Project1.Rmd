@@ -1,0 +1,103 @@
+---
+title: "Project 1"
+author: "Michael Rees - SDS 313 UT Austin"
+date: "2024-09-27"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document:
+    toc: true
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
+#needed packages:
+library(ggplot2)
+library(kableExtra)
+
+#import dataset
+album <- read.csv('Project1_Albums.csv')
+clean <- na.omit(album)
+
+album$weeksbypeak = album$weeks_on_billboard / album$peak_billboard_position
+```
+
+# **1. Introduction**
+
+This dataset of the greatest albums of all time is a list compiled by [The Rolling Stones](https://rollingstones.com/) a website covering music. To compile the list, the Rolling Stones polled artists, songwriters, producers, A&Rs, executives, and their staff to make this list. This list was also compiled in 2003 and 2012, along with the dataset in use, the information gathered for 2020. It gives information on the artist, album name, genre, release year, type of album, time and peak on the billboard, spotify popularity, and the amount of artists on the album.
+
+![](/Users/michael/Documents/SDS 313/wk5/Project 1/Dark_Side_Of_The_Moon.jpg)
+
+*Album Cover for Dark Side of the Moon, by Pink Floyd. Source: [Wikipedia](https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon)*
+
+# **2. Outcome Variable**
+
+```{r message = FALSE, echo = FALSE}
+#create a distribution
+album_ggplot <- ggplot(album)
+album_ggplot + geom_histogram(aes(x=weeks_on_billboard), fill = '#3683c7') + 
+  labs(title = 'Distribution of albums weeks on the Billboard',
+       x = 'Weeks on Billboard',
+       y = 'Frequency')
+```
+
+The primary variable that will be investigated is the weeks on the billboard for each of the albums in the rolling stones top 500 ranking. The distribution for this variable is skewed right with a median of `r median(clean$weeks_on_billboard)` and a mean of `r round(mean(clean$weeks_on_billboard), 2)`.
+
+# **3. Bivariate Analyses**
+
+### **Weeks on Billboard and Genre**
+```{r message = FALSE, echo = FALSE}
+genre <- album[album$genre=='Hip-Hop/Rap'|album$genre=='Soul/Gospel/R&B'|album$genre=='Indie/Alternative Rock'|album$genre=='Latin'|album$genre=='Hard Rock/Metal',]
+genre_ggplot <- ggplot(genre)
+
+genre_ggplot + geom_boxplot(aes(x=genre, y=weeks_on_billboard, fill=genre)) +
+labs(title = 'Distribution of Weeks on the Billboard of Albums by Genre',
+       x = 'Genre',
+       y = 'Weeks on the Billboard',
+       fill = 'Genre Name') +
+      theme(axis.text.x = element_blank())
+
+soul <- clean[clean$genre== 'Soul/Gospel/R&B',]
+alt <- clean[clean$genre== 'Indie/Alternative Rock',]
+```
+
+As can be seen in this distribution, ignoring outliers, the distribution of weeks on the billboard does not differ largely between the genres shown above. <span style="color:#e940cd">Soul, Gospel, and R&B</span> have the highest upper outlier, but the median amount of time on the billboard is `r median(soul$weeks_on_billboard)`, not the highest of the 5 genres shown above. <span style="color:#1DB954">Indie and Alternative Rock</span> have the highest median at `r median(alt$weeks_on_billboard)` but have the second lowest upper outlier.
+
+### **Peak Billboard Position of Albums**
+```{r message = FALSE, echo = FALSE}
+album_ggplot + geom_point(aes(y=weeks_on_billboard,x=peak_billboard_position)) +
+  labs(title='Weeks on the Billboard vs Peak Billboard Position', 
+       y='Weeks on Billboard',
+       x='Peak Billboard Position')
+```
+
+Since this list is composed of the best albums of all time, it can be expected that a significant portion of these albums have been place at #1 on the billboard at some point in time. This leads this graph to have a large stack of datapoints at the #1 peak position, and then quickly trailing off to the albums that did not peak as high on the billboard. This essentially exponential connection caused by the bias in this dataset can be seen in the week correlation between these two variables, `r round(cor(clean$weeks_on_billboard, clean$peak_billboard_position), 2) `.
+
+
+### **Spotify Popularity of Albums**
+```{r message = FALSE, echo = FALSE}
+album_ggplot + geom_point(aes(y=weeks_on_billboard,x=spotify_popularity, color = release_year), size = 1.25) +
+  labs(title='Weeks on the Billboard vs Spotify Popularity', 
+       y='Weeks on Billboard',
+       x='Spotify Popularity',
+       color = 'Release Year') +
+  scale_color_gradient(low = "black", high  = "#1DB954")
+```
+
+The correlation between weeks on the billboard and spotify popularity is not very strong with correlation of `r round(cor(clean$weeks_on_billboard, clean$spotify_popularity), 2)`, but it is clearly shown by the graph that there is some connection with albums with more weeks on the billboard generally having more spotify popularity. The prime example of this is the [Dark Side of the Moon](https://open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv) an album by Pink Floyd, which has by far the most weeks on the billboard while being one of the most popular albums on spotify. Even with this example, these variables might not correlate as much as one might expect due to the medium some of the albums in the top 500 ranking. As can be seen by the release year, the albums with more recent release years are much more likely to appear higher in the spotify popularity since more recent albums are much more likely to released and promoted on streaming services such as spotify. Despite this, they do no have much correlation directly with the weeks on the billboard as can be seen by the correlation coefficient `r round(cor(clean$weeks_on_billboard, clean$release_year), 2)`.
+
+# **4. Conclusion**
+
+According to my findings, the Weeks on the Billboard for an album in the Rolling Stones top albums do not generally depend on or correlate with any specific factor such as release date, spotify popularity, peak billboard position, , or genre. It is fascinating to see how the rise of streaming services and changes in popular mediums of music has changed which albums dominate the popular sphere today, as compared to the past. In the future, I would consider doing similar analyses on a much larger dataset of albums as I believe that the biases that go into making a dataset of "greatest" albums will cause unnatural skews in variables such as genre and peak billboard position. By using a more general dataset these biases can be removed and a conclusive study can be made.
+
+### **References**
+
+<span style="font-size: 12px; font-family: 'Times New Roman', serif;"> “The Dark Side of the Moon.” Wikipedia, en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon. Accessed 25 Sept. 2024. 
+
+<span style="font-size: 12px; font-family: 'Times New Roman', serif;"> “The Dark Side of the Moon.” Spotify, open.spotify.com/album/4LH4d3cOWNNsVw41Gqt2kv. 
+
+<span style="font-size: 12px; font-family: 'Times New Roman', serif;"> Rfordatascience. “Tidytuesday/Data/2024/2024-05-07/readme.md at Master · Rfordatascience/Tidytuesday.” GitHub, 7 May 2024, github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-07/readme.md. 
+
+<span style="font-size: 12px; font-family: 'Times New Roman', serif;"> Riva, Matt Daniels Chris Dalla. “What Makes an Album the Greatest of All Time?” The Pudding, pudding.cool/2024/03/greatest-music. 
+
+<span style="font-size: 12px; font-family: 'Times New Roman', serif;"> “The Rolling Stones | Official Website.” The Rolling Stones | Official Website, 23 Feb. 2024, rollingstones.com. </span>
