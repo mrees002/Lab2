@@ -11,7 +11,7 @@ output:
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, echo = FALSE)
-#needed packages:
+#downloading packages:
 library(ggplot2)
 library(kableExtra)
 
@@ -88,7 +88,7 @@ The correlation between weeks on the billboard and spotify popularity is not ver
 
 # **4. Conclusion**
 
-According to my findings, the Weeks on the Billboard for an album in the Rolling Stones top albums do not generally depend on or correlate with any specific factor such as release date, spotify popularity, peak billboard position, , or genre. It is fascinating to see how the rise of streaming services and changes in popular mediums of music has changed which albums dominate the popular sphere today, as compared to the past. In the future, I would consider doing similar analyses on a much larger dataset of albums as I believe that the biases that go into making a dataset of "greatest" albums will cause unnatural skews in variables such as genre and peak billboard position. By using a more general dataset these biases can be removed and a conclusive study can be made.
+According to my findings, the Weeks on the Billboard for an album in the Rolling Stones top albums do not generally depend on or correlate with any specific factor such as release date, spotify popularity, peak billboard position, or genre. It is fascinating to see how the rise of streaming services and changes in popular mediums of music has changed which albums dominate the popular sphere today, as compared to the past. In the future, I would consider doing similar analyses on a much larger dataset of albums as I believe that the biases that go into making a dataset of "greatest" albums will cause unnatural skews in variables such as genre and peak billboard position. By using a more general dataset these biases can be removed and a conclusive study can be made.
 
 ### **References**
 
